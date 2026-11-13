@@ -162,9 +162,39 @@ Kết quả: **0 lỗi, 0 cảnh báo**. Không còn cảnh báo mật độ key
 
    Lỗi thực tế tôi đã nêu là một vài frame box chưa bám sát người; tôi không nhớ frame cụ thể. Nếu box trôi khỏi người (drift), xe có thể hiểu người đứng yên thành đang di chuyển, hoặc tưởng người đang đi đã dừng vì box bị kẹt phía sau; box lệch còn có thể làm sai ước lượng khoảng cách. Với lỗi ID switch nói chung, xe có thể hiểu người đó vừa "dịch chuyển tức thời", tính sai vận tốc và hướng đi; chẳng hạn tưởng một người trên vỉa hè đột ngột lao ra lòng đường rồi phanh gấp vô cớ. Ví dụ ID switch này là tình huống giải thích, không phải một lỗi ID switch đã được xác nhận trong job của tôi. Bổ sung khái niệm có hỗ trợ: IDF1 tập trung vào việc giữ đúng danh tính qua thời gian nên ID switch kéo dài tác động rõ tới IDF1; MOTA tổng hợp FN, FP và IDSW, vì vậy cũng bị ảnh hưởng bởi đổi ID, còn box trôi có thể làm mất ghép đúng và phát sinh FN/FP. Không có GT nên tôi không kết luận chỉ số nào giảm nhiều hơn trong job này.
 
+## Bonus
+
+### B2 — So sánh cách đặt keyframe trên P3
+
+**Đối tượng:** P3, người áo xanh lá đi về phía camera, ID 3 trong job 17. Track chính có mặt ở đủ frame 0–149 và có **65 keyframe**.
+
+**Cách làm thí nghiệm:** lấy box của bản xuất chính tại frame **0, 30, 60, 90, 120, 149**, sao chép sang một track phụ rồi để CVAT nội suy giữa các mốc; không chỉnh thêm các frame ở giữa. Mốc 149 là frame cuối video, nên khoảng cuối dài 29 frame. Track phụ mang ID 6 và nguồn `FILE` trong lúc chụp. Đây là phép thử tái sử dụng nhãn hiện có với hỗ trợ kỹ thuật từ ChatGPT/Codex, **không phải một lượt học viên tự vẽ lại sáu box mới**. Các mục tự review và ba câu kết ở trên được giữ nguyên.
+
+| Cách đặt | Số keyframe | Frame trôi nhất / frame đối chiếu | Ghi chú |
+|---|---:|---|---|
+| Đều mỗi 30 frame, có mốc cuối 149 | 6 | 75 — chênh lệch lớn nhất theo IoU so với bản chính trong 150 frame | Ít mốc hơn, nhưng box ở giữa có thể lệch dù khớp ở các mốc lấy mẫu. |
+| Các mốc điều chỉnh trong bài chính | 65 | 75 — dùng làm cùng frame đối chiếu | Bản tham chiếu là nhãn học viên đã gán và được rút gọn mốc trước đó; không coi là GT. |
+
+**Kết quả tại frame 75** (tọa độ trên ảnh gốc 1920×1080):
+
+- Box chính: `(1503.60, 338.80, 1689.00, 825.10)`; box đều 30 frame: `(1457.39, 341.50, 1675.62, 825.75)` theo thứ tự `(x_min, y_min, x_max, y_max)`.
+- Cạnh trái của bản đều 30 frame lệch sang trái **46,21 px** so với box chính; chiều rộng lần lượt khoảng **218,23 px** và **185,40 px**.
+- IoU giữa hai box ở frame này khoảng **0,7385**, thấp nhất trong phép đối chiếu 150 frame. Đây là độ giống nhau giữa hai bản nhãn, **không phải IoU với GT, MOTA hay IDF1**.
+
+**Giải thích:** ở frame 75, CVAT lấy vị trí trung gian giữa các box ở frame 60 và 90. Nội suy tuyến tính giả định các cạnh box thay đổi đều theo thời gian, trong khi đường biên và kích thước box ở nhãn chính thay đổi không hoàn toàn tuyến tính. Vì vậy chỉ đặt mốc theo khoảng thời gian cố định có thể tạo box lệch ở giữa. Bản chính có thêm mốc ở frame 75 và các vị trí cần điều chỉnh. Sáu mốc giúp giảm công đặt mốc, nhưng vẫn cần xem lại đoạn ở giữa để quyết định có phải bổ sung keyframe hay không.
+
+**Ảnh minh chứng tại frame 75:** box **hồng (ID 3)** là bản chính; box **xanh lá (ID 6)** là bản đều 30 frame. Các track khác chỉ được ẩn tạm để ảnh dễ đọc. Panel có 6 object vì ảnh chụp trong lúc thử; sau khi xuất riêng, track phụ đã được bỏ khỏi job chính.
+
+![Bonus B2: P3 chính màu hồng và bản sáu mốc màu xanh lá tại frame 75](images/bonus_b2_frame_075.png)
+
+Nguồn ảnh: **MOT17, MOTChallenge (Milan et al., 2016)**; ảnh chụp trực tiếp giao diện CVAT local của job 17.
+
+**File thí nghiệm:** [BuiKimTrai_bonus_b2.zip](../../src/exports/BuiKimTrai_bonus_b2.zip), định dạng CVAT for video 1.1, chỉ chứa một track phụ với 150 box, 6 keyframe, không kèm ảnh/video. ZIP được tách track phụ từ bản xuất CVAT của phiên thử; ID track trong XML là 5, tương ứng ID 6 trên giao diện khi chụp. Bài chính vẫn giữ **5 track, 621 box, 264 keyframe**, job Completed; hai ZIP chính giữ nguyên. Không khai đã làm B1 hoặc B3 và không tự cộng điểm Bonus.
+
 ## 7. Tài liệu tham khảo và công cụ AI đã dùng
 
 - [Yêu cầu nộp](../../SUBMISSION.md), [checkpoints](../../CHECKPOINTS.md), [rubric](../../RUBRIC.md), [quy định](../../RULES.md).
 - [Guideline](../../docs/GUIDELINE.md), [thao tác CVAT](../../docs/CVAT_CHEATSHEET.md), [MOT và chỉ số đánh giá](../../docs/MOT_FORMAT.md), [script tự kiểm](../../src/check_submission.py).
 - Nguồn ảnh: MOT17, MOTChallenge (Milan et al., 2016), CC BY-NC-SA 3.0. Chỉ đưa ảnh chụp vùng minh chứng, không đưa frame/video hoặc GT MOT17 gốc vào bài nộp.
 - Tôi tự gán các box và track ID ban đầu. ChatGPT/Codex được dùng để giải thích khái niệm/cảnh báo, kiểm tra file, hỗ trợ đối chiếu, rút gọn keyframe dư, xuất lại dữ liệu, chụp ảnh minh chứng và biên tập báo cáo. Phần rút gọn giữ nguyên tọa độ ở các mốc giữ lại, giữ ID/cờ; CVAT nội suy lại ở giữa. Việc so với bản trước sửa cho IoU khoảng 97% trở lên, chênh lệch góc box tối đa khoảng 5 px; đây không phải điểm GT. Không dùng tracker/model AI hoặc tọa độ GT để sinh track ID mới. Nội dung tự review và lý do quyết định ID dựa trên thông tin tôi cung cấp, xác nhận; phần giải thích nội suy và chỉ số có ghi rõ hỗ trợ kỹ thuật. Không ghi nhận xét của công cụ thành trải nghiệm cá nhân chưa xảy ra.
+- Với Bonus B2, ChatGPT/Codex hỗ trợ sao chép sáu mốc từ nhãn đã có, thực hiện nội suy bằng CVAT, xuất riêng track thử, tính chênh lệch với bản chính và chụp minh chứng. Không sử dụng GT hoặc mô hình thị giác để dự đoán box. Track phụ là bản sao thí nghiệm của P3, không phải người mới, và đã được bỏ khỏi job chính.
