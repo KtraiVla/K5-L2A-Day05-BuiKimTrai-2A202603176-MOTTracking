@@ -8,7 +8,7 @@ Dữ liệu: MOT17-09, 150 frame, 1920×1080, 30 fps. Nguồn: MOT17, MOTChallen
 - MSSV: **2A202603176**.
 - Mã đề: **A**, được xác nhận lại bằng script chia đề theo MSSV.
 - Email: buikimtrai2k5@gmail.com.
-- Repository: https://github.com/KtraiVla/K5-L2A-Day05-BuiKimTrai-2A202603176-MOTTracking.
+- Repository: [K5-L2A-Day05-BuiKimTrai-2A202603176-MOTTracking](https://github.com/KtraiVla/K5-L2A-Day05-BuiKimTrai-2A202603176-MOTTracking).
 - CVAT local: task 17, job 17, `DAY05-MOT17-09-A-2A202603176`.
 - Buổi gán nhãn ban đầu theo thời gian tôi nhớ lại: **16:30–19:30 ngày 13/11/2026 (GMT+7)**, tổng **180 phút**. Tôi không đo riêng theo người hoặc checkpoint. Các lượt kiểm tra, tối ưu và hoàn thiện sau buổi không có số phút ghi riêng để cộng thêm.
 
@@ -28,7 +28,7 @@ Cấu hình được kiểm tra trên job: **Player step = 10**, tự lưu bật
 
 ## 2. Keyframe và thời gian (CP1, CP4)
 
-Tôi tự gán box và track ID ban đầu, chỉnh gần như từng frame để bám người vì chưa hiểu rõ nội suy. Sau khi được giải thích, tôi nhờ hỗ trợ rà soát và rút gọn các mốc dư; tôi vẫn đang làm quen với cách chọn mốc. Những keyframe giữ lại dùng nguyên tọa độ đã lưu; các box ở giữa được CVAT nội suy lại. Số liệu dưới đây lấy từ bản xuất cuối, không sửa số cho đẹp.
+Tôi tự gán box và track ID ban đầu, chỉnh gần như từng frame để bám người vì chưa hiểu rõ nội suy. Sau khi được giải thích, tôi nhờ hỗ trợ rà soát và rút gọn các mốc dư; tôi vẫn đang làm quen với cách chọn mốc. Những keyframe giữ lại dùng nguyên tọa độ đã lưu; các box ở giữa được CVAT nội suy lại. Số liệu dưới đây lấy từ bản xuất cuối.
 
 | Mã / ID trên CVAT / ID trong MOT | Số keyframe có mặt | Keyframe tại frame | Số frame có mặt | KF / 100 frame | Thời gian (phút) | Chỗ khó / quan sát hỗ trợ |
 |---|---:|---|---:|---:|---|---|
@@ -158,7 +158,7 @@ Kết quả: **0 lỗi, 0 cảnh báo**. Không còn cảnh báo mật độ key
 
    Chỗ P1 bị che là nơi tôi phải suy đoán để quyết định giữ cùng ID. Khi còn che một phần, tôi vẫn thấy một phần cơ thể và theo dõi hành động, diễn biến chuyển động của họ để nhận ra đó là người cũ khi hiện lại. Trong nhãn cuối, khoảng outside là 2 frame, nhỏ hơn 60 frame; tôi giữ ID 1 trước và sau đoạn che. Tôi không tạo một người mới chỉ vì người cũ tạm thời bị che. Các mốc cụ thể và ảnh minh chứng được ghi ở mục 3 sau khi đối chiếu file xuất.
 
-3. Một lỗi box/ID ảnh hưởng dự đoán chuyển động của xe tự lái thế nào? Liên hệ MOTA và IDF1.
+3. Một lỗi ID trong job của bạn (nếu không còn sót, chọn lỗi đã sửa) có thể làm xe tự lái dự đoán sai chuyển động của người đó như thế nào? Lỗi đó ảnh hưởng MOTA hay IDF1 nhiều hơn?
 
    Lỗi thực tế tôi đã nêu là một vài frame box chưa bám sát người; tôi không nhớ frame cụ thể. Nếu box trôi khỏi người (drift), xe có thể hiểu người đứng yên thành đang di chuyển, hoặc tưởng người đang đi đã dừng vì box bị kẹt phía sau; box lệch còn có thể làm sai ước lượng khoảng cách. Với lỗi ID switch nói chung, xe có thể hiểu người đó vừa "dịch chuyển tức thời", tính sai vận tốc và hướng đi; chẳng hạn tưởng một người trên vỉa hè đột ngột lao ra lòng đường rồi phanh gấp vô cớ. Ví dụ ID switch này là tình huống giải thích, không phải một lỗi ID switch đã được xác nhận trong job của tôi. Bổ sung khái niệm có hỗ trợ: IDF1 tập trung vào việc giữ đúng danh tính qua thời gian nên ID switch kéo dài tác động rõ tới IDF1; MOTA tổng hợp FN, FP và IDSW, vì vậy cũng bị ảnh hưởng bởi đổi ID, còn box trôi có thể làm mất ghép đúng và phát sinh FN/FP. Không có GT nên tôi không kết luận chỉ số nào giảm nhiều hơn trong job này.
 
