@@ -162,10 +162,6 @@ Kết quả: **0 lỗi, 0 cảnh báo**. Không còn cảnh báo mật độ key
 
    Lỗi thực tế tôi đã nêu là một vài frame box chưa bám sát người; tôi không nhớ frame cụ thể. Nếu box trôi khỏi người (drift), xe có thể hiểu người đứng yên thành đang di chuyển, hoặc tưởng người đang đi đã dừng vì box bị kẹt phía sau; box lệch còn có thể làm sai ước lượng khoảng cách. Với lỗi ID switch nói chung, xe có thể hiểu người đó vừa "dịch chuyển tức thời", tính sai vận tốc và hướng đi; chẳng hạn tưởng một người trên vỉa hè đột ngột lao ra lòng đường rồi phanh gấp vô cớ. Ví dụ ID switch này là tình huống giải thích, không phải một lỗi ID switch đã được xác nhận trong job của tôi. Bổ sung khái niệm có hỗ trợ: IDF1 tập trung vào việc giữ đúng danh tính qua thời gian nên ID switch kéo dài tác động rõ tới IDF1; MOTA tổng hợp FN, FP và IDSW, vì vậy cũng bị ảnh hưởng bởi đổi ID, còn box trôi có thể làm mất ghép đúng và phát sinh FN/FP. Không có GT nên tôi không kết luận chỉ số nào giảm nhiều hơn trong job này.
 
-## Bonus
-
-Chưa có minh chứng làm Bonus B1, B2 hoặc B3 trong hồ sơ hiện tại; không tự khai điểm bonus. Bài nộp chính giữ đúng 5 track. Các công cụ timeline/sandbox là hỗ trợ tùy chọn, không làm thay đổi danh mục file bắt buộc.
-
 ## 7. Tài liệu tham khảo và công cụ AI đã dùng
 
 - [Yêu cầu nộp](../../SUBMISSION.md), [checkpoints](../../CHECKPOINTS.md), [rubric](../../RUBRIC.md), [quy định](../../RULES.md).
